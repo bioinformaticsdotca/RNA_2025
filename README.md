@@ -1,9 +1,6 @@
-## CBW WORKSHOP YEAR
+## CBW RNA-seq Analysis 2025
 
-[Workshop Website](YOUR WORKSHOP URL HERE)
+[Workshop Website](bioinformaticsdotca.github.io/RNA_2025)
 
-CITY, PROVINCE(S)  
-Instructors: INSTRUCTOR NAMES  
-TAs: TA NAMES
-
-OUTLINE HERE
+Toronto, ON and Edmonton, AB
+Instructors: Malachi Griffith and Obi Griffith
