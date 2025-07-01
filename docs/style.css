@@ -15,6 +15,10 @@ pre code {
   white-space: inherit;
 }
 
+.table-wrapper {
+  overflow-x: scroll;
+}
+
 /* Below consists of css elements added for the purpose of this template*/
 
 #sponsors { /*styling the sponsors header at the bottom of the sidebar, comes from the toc in _output.yml*/

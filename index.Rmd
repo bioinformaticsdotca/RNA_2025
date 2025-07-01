@@ -26,10 +26,28 @@ After workshop concludes, YOUR EMBED CODE HERE-->
 
 ## Schedule
 
-<!--Copy paste a table into https://www.tablesgenerator.com/markdown_tables (select convert to markdown) to create a table in markdown.   
--->
+<div class="table-wrapper" markdown="block">
+
+| Time (Mountain) | Time (Eastern) |                                    July 7                                   | Time (Mountain) | Time (Eastern) |                                     July 8                                     | Time (Mountain) | Time (Eastern) |                                  July 9                                  |
+|:---------------:|:--------------:|:---------------------------------------------------------------------------:|:---------------:|:--------------:|:------------------------------------------------------------------------------:|:---------------:|:--------------:|:------------------------------------------------------------------------:|
+|       7:30      |      9:30      |                             Arrivals & Check-in                             |       7:30      |      9:30      |                                    Arrivals                                    |       7:30      |      9:30      |                                 Arrivals                                 |
+|       8:00      |      10:00     |                             Welcome (Nia Hughes)                            |       8:00      |      10:00     |                      Module 2 - RNA alignment (practical)                      |       8:00      |      10:00     | Module 3 - RNA Expression and Differential Expression (Practical cont'd) |
+|       8:30      |      10:30     |   Module 1 - Intro to RNAseq course/concepts (lecture) (Malachi Griffith)   |                 |                |                                                                                |                 |                |                                                                          |
+|       9:30      |      11:30     |                                Break (30min)                                |      10:00      |      12:00     |                                  Break (30min)                                 |      10:00      |      12:00     |                               Break (30min)                              |
+|      10:00      |      12:00     |                             AWS Login and Setup                             |      10:30      |      12:30     |                   Module 2 - RNA alignment (practical cont'd)                  |      10:30      |      12:30     |          Module 4 - Advanced Topics (Lecture) (Malachi Griffith)         |
+|      10:30      |      12:30     |                 Module 1 - RNAseq inputs and QC (practical)                 |                 |                |                                                                                |                 |                |                                                                          |
+|                 |                |                                                                             |                 |                |                                                                                |                 |                |                                                                          |
+|      11:30      |      13:30     |                                  Lunch (1h)                                 |      11:30      |      13:30     |                                   Lunch (1h)                                   |      11:30      |      13:30     |                         Lunch + Class Photo (1h)                         |
+|      12:30      |      14:30     |              Module 1 - RNAseq inputs and QC (practical cont'd)             |      12:30      |      14:30     | Module 3 - RNA Expression and Differential Expression (Lecture) (Obi Griffith) |      12:30      |      14:30     |                  Module 4 - Pathway Analysis (Practical)                 |
+|      14:30      |      16:30     |                                Break (30min)                                |      13:30      |      15:30     |                                  Break (30min)                                 |      14:30      |      16:30     |                               Break (30min)                              |
+|      15:00      |      17:00     | Module 2 - RNA alignment concepts and file formats (lecture) (Obi Griffith) |      14:00      |      16:00     |        Module 3 - RNA Expression and Differential Expression (Practical)       |      15:00      |      17:00     |                  Module 4 - Batch Correction (Practical)                 |
+|                 |                |                                                                             |                 |                |                                                                                |      16:00      |      18:00     |                         Survey & Closing Remarks                         |
+|      16:30      |      18:30     |                          (Optional) Team Assignment                         |      16:30      |      18:30     |                           (Optional) Team Assignment                           |      16:30      |      18:30     |                               End of Day 3                               |
+|      17:00      |      19:00     |                                 End of Day 1                                |      17:30      |      19:30     |                                  End of Day 2                                  |                 |                |                                                                          |
+
+</div>
 
 ## Pre-work
 
-<!--[You can find your pre-work here.](LINK TO PREWORK)
--->
+[You can find your pre-work here.](https://docs.google.com/forms/d/e/1FAIpQLSfiHztWIonpGIAVOmfhpFQfpGBBVzYGGmEbh1a4X05WPYJojg/viewform?usp=sf_link)
+
