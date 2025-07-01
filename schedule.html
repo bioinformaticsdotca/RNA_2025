@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Event Schedule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font family */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* bg-gray-50 */
+        }
+
+        /* --- Accessibility & Styling --- */
+
+        /* Style for the active/selected tab button */
+        button[role="tab"][aria-selected="true"] {
+            background-color: #4f46e5; /* indigo-600 */
+            color: white;
+            border-color: #4f46e5; /* indigo-600 */
+        }
+
+        /* Style for inactive tab buttons on hover */
+        button[role="tab"][aria-selected="false"]:hover {
+            background-color: #eef2ff; /* indigo-50 */
+            border-color: #a5b4fc; /* indigo-300 */
+        }
+
+        /* Add focus ring for keyboard navigation */
+        button[role="tab"]:focus {
+            outline: 2px solid #4338ca; /* indigo-700 */
+            outline-offset: 2px;
+            z-index: 10;
+        }
+
+        /* Hide tab panels by default */
+        div[role="tabpanel"] {
+            display: none;
+        }
+
+        /* Show the active tab panel */
+        div[role="tabpanel"]:not([hidden]) {
+            display: block;
+        }
+
+        /* Specific selector to ensure row highlighting is not overridden by host page styles */
+        #schedule-container table tbody tr.schedule-item-shaded {
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+
+    <div id="schedule-container" class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Workshop Schedule</h1>
+            <p class="text-gray-600 mb-6">Select a day to view the schedule.</p>
+
+            <!-- Tab List: Added ARIA role="tablist" -->
+            <div role="tablist" aria-label="Workshop Schedule" class="border-b border-gray-200 mb-6 flex flex-wrap -mb-px">
+                <!-- Tab Buttons: Added ARIA roles and attributes -->
+                <button id="tab-day1" role="tab" aria-selected="true" aria-controls="panel-day1" data-day="7" class="text-gray-600 whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm sm:text-base transition-colors duration-200 ease-in-out rounded-t-md">
+                    July 7
+                </button>
+                <button id="tab-day2" role="tab" aria-selected="false" aria-controls="panel-day2" data-day="8" tabindex="-1" class="text-gray-600 whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm sm:text-base transition-colors duration-200 ease-in-out rounded-t-md">
+                    July 8
+                </button>
+                <button id="tab-day3" role="tab" aria-selected="false" aria-controls="panel-day3" data-day="9" tabindex="-1" class="text-gray-600 whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm sm:text-base transition-colors duration-200 ease-in-out rounded-t-md">
+                    July 9
+                </button>
+            </div>
+
+            <!-- Tab Content Panels -->
+            <div id="tab-contents">
+                <!-- Day 1 Panel: Added ARIA roles and attributes -->
+                <div id="panel-day1" role="tabpanel" tabindex="0" aria-labelledby="tab-day1">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-1/6">Time (Mountain)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-1/6">Time (Eastern)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-4/6">Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9:30</td><td class="px-6 py-4 text-sm text-gray-700">Arrivals & Check-in</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:00</td><td class="px-6 py-4 text-sm text-gray-700">Welcome (Nia Hughes)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 1 - Intro to RNAseq course/concepts (lecture) (Malachi Griffith)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">11:30</td><td class="px-6 py-4 text-sm text-gray-700">Break (30min)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:00</td><td class="px-6 py-4 text-sm text-gray-700">AWS Login and Setup</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 1 - RNAseq inputs and QC (practical)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">11:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13:30</td><td class="px-6 py-4 text-sm text-gray-700">Lunch (1h)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 1 - RNAseq inputs and QC (practical cont'd)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:30</td><td class="px-6 py-4 text-sm text-gray-700">Break (30min)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">15:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">17:00</td><td class="px-6 py-4 text-sm text-gray-700">Module 2 - RNA alignment concepts and file formats (lecture) (Obi Griffith)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">18:30</td><td class="px-6 py-4 text-sm text-gray-700">(Optional) Team Assignment</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">17:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">19:00</td><td class="px-6 py-4 text-sm text-gray-700">End of Day 1</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Day 2 Panel -->
+                <div id="panel-day2" role="tabpanel" tabindex="0" aria-labelledby="tab-day2" hidden>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-1/6">Time (Mountain)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-1/6">Time (Eastern)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-4/6">Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9:30</td><td class="px-6 py-4 text-sm text-gray-700">Arrivals</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:00</td><td class="px-6 py-4 text-sm text-gray-700">Module 2 - RNA alignment (practical)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:00</td><td class="px-6 py-4 text-sm text-gray-700">Break (30min)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 2 - RNA alignment (practical cont'd)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">11:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13:30</td><td class="px-6 py-4 text-sm text-gray-700">Lunch (1h)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 3 - RNA Expression and Differential Expression (Lecture) (Obi Griffith)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">15:30</td><td class="px-6 py-4 text-sm text-gray-700">Break (30min)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:00</td><td class="px-6 py-4 text-sm text-gray-700">Module 3 - RNA Expression and Differential Expression (Practical)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">18:30</td><td class="px-6 py-4 text-sm text-gray-700">(Optional) Team Assignment</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">17:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">19:30</td><td class="px-6 py-4 text-sm text-gray-700">End of Day 2</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Day 3 Panel -->
+                <div id="panel-day3" role="tabpanel" tabindex="0" aria-labelledby="tab-day3" hidden>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-1/6">Time (Mountain)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-1/6">Time (Eastern)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-4/6">Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9:30</td><td class="px-6 py-4 text-sm text-gray-700">Arrivals</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:00</td><td class="px-6 py-4 text-sm text-gray-700">Module 3 - RNA Expression and Differential Expression (Practical cont'd)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:00</td><td class="px-6 py-4 text-sm text-gray-700">Break (30min)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 4 - Advanced Topics (Lecture) (Malachi Griffith)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">11:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13:30</td><td class="px-6 py-4 text-sm text-gray-700">Lunch + Class Photo (1h)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14:30</td><td class="px-6 py-4 text-sm text-gray-700">Module 4 - Pathway Analysis (Practical)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:30</td><td class="px-6 py-4 text-sm text-gray-700">Break (30min)</td></tr>
+                                <tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">15:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">17:00</td><td class="px-6 py-4 text-sm text-gray-700">Module 4 - Batch Correction (Practical)</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:00</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">18:00</td><td class="px-6 py-4 text-sm text-gray-700">Survey & Closing Remarks</td></tr>
+                                <tr class="schedule-item-shaded"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16:30</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">18:30</td><td class="px-6 py-4 text-sm text-gray-700">End of Day 3</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const scheduleContainer = document.getElementById('schedule-container');
+            if (!scheduleContainer) return;
+
+            const tabList = scheduleContainer.querySelector('[role="tablist"]');
+            const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
+            const panels = Array.from(scheduleContainer.querySelectorAll('[role="tabpanel"]'));
+
+            function activateTab(tab) {
+                // Deactivate all other tabs
+                tabs.forEach(t => {
+                    t.setAttribute('aria-selected', 'false');
+                    t.setAttribute('tabindex', '-1');
+                });
+
+                // Hide all panels
+                panels.forEach(p => {
+                    p.setAttribute('hidden', true);
+                });
+
+                // Activate the selected tab
+                tab.setAttribute('aria-selected', 'true');
+                tab.setAttribute('tabindex', '0');
+
+                // Show the corresponding panel
+                const controlledPanelId = tab.getAttribute('aria-controls');
+                const controlledPanel = document.getElementById(controlledPanelId);
+                if (controlledPanel) {
+                    controlledPanel.removeAttribute('hidden');
+                }
+            }
+
+            // --- Event Listeners for manual clicking and keyboard navigation ---
+            tabList.addEventListener('click', (e) => {
+                const clickedTab = e.target.closest('[role="tab"]');
+                if (clickedTab) {
+                    activateTab(clickedTab);
+                }
+            });
+
+            tabList.addEventListener('keydown', (e) => {
+                const currentTab = e.target.closest('[role="tab"]');
+                if (!currentTab) return;
+
+                let index = tabs.indexOf(currentTab);
+
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    index = (index + 1) % tabs.length;
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    index = (index - 1 + tabs.length) % tabs.length;
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    index = 0;
+                } else if (e.key === 'End') {
+                    e.preventDefault();
+                    index = tabs.length - 1;
+                } else {
+                    return;
+                }
+
+                tabs[index].focus();
+                activateTab(tabs[index]);
+            });
+
+            // --- New logic to set tab based on current date ---
+            const today = new Date();
+            const currentMonth = today.getMonth(); // 0-indexed, July is 6
+            const currentDay = today.getDate();
+            let tabToActivate = null;
+
+            // Check if it's July
+            if (currentMonth === 6) {
+                // Find the tab whose `data-day` attribute matches the current day
+                tabToActivate = tabs.find(tab => parseInt(tab.dataset.day) === currentDay);
+            }
+
+            // If a tab for today was found and it's not already selected, activate it.
+            if (tabToActivate && tabToActivate.getAttribute('aria-selected') === 'false') {
+                activateTab(tabToActivate);
+            }
+        });
+    </script>
+
+</body>
+</html>
