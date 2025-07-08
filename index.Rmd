@@ -17,6 +17,9 @@ favicon: img/favicon.ico
 # (PART) Introduction {-}
 
 # Workshop Info
+[Lecture slides are available here](https://drive.google.com/drive/folders/1Tnb-PBaisxxURp3YlJIi0a9ltXqm7xsW)  
+[Mini-lecture slides are available here](https://drive.google.com/drive/folders/1tjvdLh-YG_glR05k4xq1ZCRWb3OG4nBw)
+[Lab instructions are available here](rnabio.org)
 
 <!--## Class Photo
 
