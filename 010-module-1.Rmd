@@ -9,5 +9,5 @@
 ## Lecture
 <iframe src="https://drive.google.com/file/d/1zjmIjjvpgiJTzuFFiWF8_8h1bn7xKL8e/preview" width="640" height="480" allow="autoplay"></iframe>
 
-## Lab
-[Module 1 Lab](https://rnabio.org/module-01-inputs/0001/01/01/Intro_to_Inputs/)
+## Labs
+[Module 1 Labs](https://rnabio.org/module-01-inputs/0001/01/01/Intro_to_Inputs/)
