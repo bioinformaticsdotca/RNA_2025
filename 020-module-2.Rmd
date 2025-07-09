@@ -258,8 +258,8 @@ Welcome to the lab for Genome Visualization! This lab will introduce you to the 
 
 Lecture files that accompany this tutorial:
 
-* [IGV Lecture - Brief](/assets/module_2/IGV_Tutorial_Brief.pdf)
-* [IGV Lecture - Long, from Broad Institute](/assets/module_2/IGV_Tutorial_Long_BroadInstitute.pdf)
+* [IGV Lecture - Brief](assets/module_2/IGV_Tutorial_Brief.pdf)
+* [IGV Lecture - Long, from Broad Institute](assets/module_2/IGV_Tutorial_Long_BroadInstitute.pdf)
 
 After this lab, you will be able to:
 
@@ -294,8 +294,8 @@ We will be using publicly available Illumina sequence data from the HCC1143 cell
 
 * Sequence read alignments generated from a cell line HCC1143 that have been filtered to this region:
 * Chromosome 21: 19,000,000-20,000,000
-* [HCC1143.normal.21.19M-20M.bam](/assets/module_2/HCC1143.normal.21.19M-20M.bam)
-* [HCC1143.normal.21.19M-20M.bam.bai](/assets/module_2/HCC1143.normal.21.19M-20M.bam.bai)
+* [HCC1143.normal.21.19M-20M.bam](assets/module_2/HCC1143.normal.21.19M-20M.bam)
+* [HCC1143.normal.21.19M-20M.bam.bai](assets/module_2/HCC1143.normal.21.19M-20M.bam.bai)
 
 ***
 
@@ -316,20 +316,20 @@ We will also load additional tracks from Server using (`File` -> `Load from Serv
 
 **Load hg19 genome and additional data tracks**
 
-![Load hg19 genome and additional data tracks](/assets/module_2/load.data.tracks.png)
+![Load hg19 genome and additional data tracks](assets/module_2/load.data.tracks.png)
 
 #### Navigation
 You should see listing of chromosomes in this reference genome. Choose 1, for chromosome 1.
 
 **Chromosome chooser**
 
-![Chromosome chooser](/assets/module_2/chromosomes.png)
+![Chromosome chooser](assets/module_2/chromosomes.png)
 
 Navigate to **chr1:10,000-11,000** by entering this into the location field (in the top-left corner of the interface) and clicking `Go`. This shows a window of chromosome 1 that is 1,000 base pairs wide and beginning at position 10,000.
 
 **Navigition using Location text field. Sequence displayed as thin coloured rectangles.**
 
-![Navigition using Location text field. Sequence displayed as thin coloured rectangles.](/assets/module_2/1.png)
+![Navigition using Location text field. Sequence displayed as thin coloured rectangles.](assets/module_2/1.png)
 
 IGV displays the sequence of letters in a genome as a sequence of colours (e.g. A = green, C = blue, etc.). This makes repetitive sequences, like the ones found at the start of this region, easy to identify. Zoom in a bit more using the `+` button to see the individual bases of the reference genome sequence.
 
@@ -337,7 +337,7 @@ You can navigate to a gene of interest by typing it in the same box the genomic 
 
 **Gene model**
 
-![Gene model](/assets/module_2/gene_model.png)
+![Gene model](assets/module_2/gene_model.png)
 
 Genes are represented as lines and boxes. Lines represent intronic regions, and boxes represent exonic regions. The arrows indicate the direction/strand of transcription for the gene. When an exon box become narrower in height, this indicates a UTR.
 
@@ -348,21 +348,21 @@ Sometimes, it is really useful to save where you are, or to load regions of inte
 
 **Bookmarks in IGV**
 
-![Bookmarks in IGV](/assets/module_2/bookmarks.png)
+![Bookmarks in IGV](assets/module_2/bookmarks.png)
 
 #### Loading Read Alignments
 We will be using the breast cancer cell line HCC1143 to visualize alignments. For speed, only a small portion of chr21 will be loaded (19M:20M).
 
 **HCC1143 Alignments to hg19:**
 
-* [HCC1143.normal.21.19M-20M.bam](/assets/module_2/HCC1143.normal.21.19M-20M.bam)
-* [HCC1143.normal.21.19M-20M.bam.bai](/assets/module_2/HCC1143.normal.21.19M-20M.bam.bai)
+* [HCC1143.normal.21.19M-20M.bam](assets/module_2/HCC1143.normal.21.19M-20M.bam)
+* [HCC1143.normal.21.19M-20M.bam.bai](assets/module_2/HCC1143.normal.21.19M-20M.bam.bai)
 
 Copy the files to your local drive, and in IGV choose `File > Load from File...`, select the bam file, and click `OK`. Note that the bam and index files must be in the same directory for IGV to load these properly.
 
 **Load BAM track from File**
 
-![Load BAM track from File](/assets/module_2/load_bam.png)
+![Load BAM track from File](assets/module_2/load_bam.png)
 
 #### Visualizing read alignments
 Navigate to a narrow window on chromosome 21: `chr21:19,480,041-19,480,386`.
@@ -376,19 +376,19 @@ Experiment with the various settings by right clicking the read alignment track 
 
 **Changing how read alignments are sorted, grouped, and colored**
 
-![Changing how read alignments are sorted, grouped, and colored](/assets/module_2/sort_and_group.png)
+![Changing how read alignments are sorted, grouped, and colored](assets/module_2/sort_and_group.png)
 
 You will see reads represented by grey or white bars stacked on top of each other, where they were aligned to the reference genome. The reads are pointed to indicate their orientation (i.e. the strand on which they are mapped). Mouse over any read and notice that a lot of information is available. To toggle read display from hover to `click`, select the yellow box and change the setting.
 
 **Changing how read information is shown (i.e. on hover, click, never)**
 
-![Changing how read information is shown (i.e. on hover, click, never)](/assets/module_2/show_details_on_click.png)
+![Changing how read information is shown (i.e. on hover, click, never)](assets/module_2/show_details_on_click.png)
 
 Once you select a read, you will learn what many of these metrics mean, and how to use them to assess the quality of your datasets. At each base that the read sequence **mismatches** the reference, the colour of the base represents the letter that exists in the read (using the same colour legend used for displaying the reference).
 
 **Viewing read information for a single aligned read**
 
-![Viewing read information for a single aligned read](/assets/module_2/click_read.png)
+![Viewing read information for a single aligned read](assets/module_2/click_read.png)
 
 ***
 
@@ -409,7 +409,7 @@ In this section we will be looking in detail at 8 positions in the genome, and d
 
 **Example1. Good quality SNVs/SNPs**
 
-![Example1. Good quality SNVs/SNPs](/assets/module_2/example1_color.png)
+![Example1. Good quality SNVs/SNPs](assets/module_2/example1_color.png)
 
 **Notes:**
 
@@ -429,13 +429,13 @@ Navigate to position `chr21:19,518,412-19,518,497`
 * Group alignments by `read strand`
 * Center on the `A` within the homopolymer run (`chr21:19,518,470`), and `Sort alignments by` -> `base`
 
-![Example 2a](/assets/module_2/example2a.png)
+![Example 2a](assets/module_2/example2a.png)
 
 **Example 2b**
 
 * Center on the one base deletion (`chr21:19,518,452`), and `Sort alignments by` -> `base`
 
-![Example 2b](/assets/module_2/example2b.png)
+![Example 2b](assets/module_2/example2b.png)
 
 **Notes:**
 
@@ -453,7 +453,7 @@ Navigate to position `chr21:19,611,925-19,631,555`. Note that the range contains
 * Load GC track (if not already loaded above)
 * See concordance of coverage with GC content
 
-![Example 3](/assets/module_2/example3.png)
+![Example 3](assets/module_2/example3.png)
 
 **Question:**
 
@@ -466,7 +466,7 @@ Navigate to region `chr21:19,666,833-19,667,007`
 
 * Sort by base (at position chr21:19,666,901)
 
-![Example 4](/assets/module_2/example4.png)
+![Example 4](assets/module_2/example4.png)
 
 **Note:**
 
@@ -479,11 +479,11 @@ Navigate to region `chr21:19,800,320-19,818,162`
 
 **Load repeats**
 
-![Load repeats](/assets/module_2/load_repeats.png)
+![Load repeats](assets/module_2/load_repeats.png)
 
 **Example 5**
 
-![Example 5](/assets/module_2/example5.png)
+![Example 5](assets/module_2/example5.png)
 
 **Notes:**
 
@@ -499,7 +499,7 @@ Navigate to region `chr21:19,324,469-19,331,468`
 * Sort reads by insert size
 * Click on a red read pair to pull up information on alignments
 
-![Example 6](/assets/module_2/example6.png)
+![Example 6](assets/module_2/example6.png)
 
 **Notes:**
 
@@ -512,7 +512,7 @@ Navigate to region `chr21:19,102,154-19,103,108`
 
 **Example 7**
 
-![Example 7](/assets/module_2/example7.png)
+![Example 7](assets/module_2/example7.png)
 
 **Notes:**
 
@@ -529,7 +529,7 @@ Navigate to region `chr21:19,089,694-19,095,362`
 * `Group alignments by` -> `pair orientation`
 * `Color alignments by` -> `insert size and pair orientation`
 
-![Example 8](/assets/module_2/example8.png)
+![Example 8](assets/module_2/example8.png)
 
 **Notes:**
 
@@ -558,7 +558,7 @@ Now run the file from the `Tools` menu:
 
 **Automation**
 
-![Automation](/assets/module_2/run_batch_script.png)
+![Automation](assets/module_2/run_batch_script.png)
 
 **Notes:**
 
@@ -570,7 +570,7 @@ Malachi Griffith, Sorana Morrissy, Jim Robinson, Ben Ainscough, Jason Walker, Ob
 
 ***
 
-![RNA-seq_Flowchart3](/assets/module_2/RNA-seq_Flowchart3.png)
+![RNA-seq_Flowchart3](assets/module_2/RNA-seq_Flowchart3.png)
 
 ***
 
@@ -648,7 +648,7 @@ Try to find a variant position in the RNAseq data:
 
 ##### IGV visualization example (DDX17 3 prime region)
 
-![IGV-DDX17](/assets/module_2/igv-ddx17.png)
+![IGV-DDX17](assets/module_2/igv-ddx17.png)
 
 ***
 
@@ -961,7 +961,7 @@ multiqc ./
 ```
 
 ##### MultiQC screenshot
-![MultiQC](/assets/module_2/multiqc.png)
+![MultiQC](assets/module_2/multiqc.png)
 
 ### View a pre-generated MultiQC report for full bam files
 View a multiQC on QC reports from non-downsampled bam files:
