@@ -21,9 +21,9 @@ favicon: img/favicon.ico
 [Mini-lecture slides are available here](https://drive.google.com/drive/folders/1tjvdLh-YG_glR05k4xq1ZCRWb3OG4nBw)  
 [Lab instructions are available here](rnabio.org)
 
-<!--## Class Photo
+## Class Photo
 
-After workshop concludes, YOUR EMBED CODE HERE-->
+<iframe src="https://drive.google.com/file/d/1Eu7eAB7KcTrwjucIR86GKepeREwRx0iy/preview" width="640" height="480" allow="autoplay"></iframe>
 
 ## Schedule
 
