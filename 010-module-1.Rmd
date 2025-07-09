@@ -1,8 +1,544 @@
 # (PART) Modules {-}
 
-# Module 0: Introductions
+# Module 0: Introductions and Environment Setup
+
+## Lecture
 
 <iframe src="https://drive.google.com/file/d/1MiLebdA0sNDn8UR1fr52fc5nXr0r58Pl/preview" width="640" height="480" allow="autoplay"></iframe>
+
+## Environment Setup
+
+This tutorial assumes use of a Linux computer with an 'x86_64' architecture. The rest of the tutorial should be conducted in a linux Terminal session. In other words you must already be logged into the Amazon EC2 instance as described in the previous section.
+
+Before proceeding you must define a global working directory by setting the environment variable: 'RNA_HOME'
+Log into a server and SET THIS BEFORE RUNNING EVERYTHING.
+
+Create a working directory and set the 'RNA_HOME' environment variable
+
+```bash
+mkdir -p ~/workspace/rnaseq/
+
+export RNA_HOME=~/workspace/rnaseq
+```
+
+Make sure whatever the working dir is, that it is set and is valid
+
+```bash
+echo $RNA_HOME
+```
+
+Since all the environment variables we set up for the RNA-seq workshop start with 'RNA' we can easily view them all by combined use of the `env` and `grep` commands as shown below. The `env` command shows all environment variables currently defined and the `grep` command identifies string matches.
+
+```bash
+env | grep RNA
+```
+
+You can place the RNA_HOME variable (and other environment variables) in your .bashrc and then logout and login again to avoid having to worry about it. A `.bashrc` file with these variables has already been created for you.
+
+In order to view the contents of this file, you can type:
+
+```bash
+less ~/.bashrc
+```
+
+To exit the file, type `q`.
+
+Environment variables used throughout this tutorial:
+
+```bash
+export RNA_HOME=~/workspace/rnaseq
+export RNA_DATA_DIR=$RNA_HOME/data
+export RNA_DATA_TRIM_DIR=$RNA_DATA_DIR/trimmed
+export RNA_REFS_DIR=$RNA_HOME/refs
+export RNA_REF_INDEX=$RNA_REFS_DIR/chr22_with_ERCC92
+export RNA_REF_FASTA=$RNA_REF_INDEX.fa
+export RNA_REF_GTF=$RNA_REF_INDEX.gtf
+export RNA_ALIGN_DIR=$RNA_HOME/alignments/hisat2
+```
+
+We will be using picard tools throughout this workshop. To follow along, you will need to set an environment variable pointing to your picard installation.
+
+```bash
+export PICARD=/home/ubuntu/bin/picard.jar
+```
+
+For simplicity, we are going to download a preconfigured `.bashrc` file to use.
+
+```bash
+cd ~
+wget http://genomedata.org/rnaseq-tutorial/bashrc_copy
+mv bashrc_copy ~/.bashrc
+source ~/.bashrc
+```
+
+Now if you run the following command, you should see the RNA environment variables present.
+
+```bash
+env | grep RNA
+```
+
+Alternatively, you could have add these enivroment variables manually if they were not part of your .bashrc. First, you can open your .bashrc file with nano by simply typing:
+
+```bash
+nano ~/.bashrc
+```
+
+You can now see the contents of this file. Then, you want to add the above environment variables to the bottom of the file. You can do this by copying and pasting. Once you have the variables in the file, you'll want to type `ctrl` + `o` to save the file, then `enter` to confirm you want the same filename, then `ctrl` + `x` to exit nano.
+
+Again, check all the RNA related environment variables to make sure things look right.
+
+```bash
+env | grep RNA
+```
+
+Note that if you are doing this course on the Google Cloud Platform instead of AWS, you should instead use this `.bashrc` file: http://genomedata.org/rnaseq-tutorial/bashrc_copy_gcp.sh 
+
+## Tool Installation
+
+
+### Note
+
+First, make sure your environment is set up correctly.
+
+***
+Tools needed for this analysis are: samtools, bam-readcount, HISAT2, stringtie, gffcompare, htseq-count, gtf_to_fasta (TopHat), kallisto, FastQC, Fastp, MultiQC, Picard, Regtools, RSeqQC, bedops, gtfToGenePred, genePredToBed, how_are_we_stranded_here, CellRanger, R, BioConductor, ballgown, and other R packages. In the following installation example, the installs are local and will work whether you have root (i.e. admin) access or not. However, if root is available some binaries can/will be copied to system-wide locations (e.g., ~/bin/).
+
+Set up tool installation location:
+
+```bash
+cd $RNA_HOME
+mkdir student_tools
+cd student_tools
+```
+
+### [SAMtools](http://www.htslib.org/)
+
+Installation type: build C++ binary from source code using `make`. Citation: [PMID: 19505943](https://pubmed.ncbi.nlm.nih.gov/19505943/).
+
+The following tool is installed by downloading a compressed archive using `wget`, decompressing it using `bunzip2`, unpacking the archive using `tar`, and building the source code using `make` to run compiler commands in the "Makefile" provided with the tool. When `make` is run without options, it attempts the "default goal" in the make file which is the first "target" defined.  In this case the first "target" is `:all`. Once the build is complete, we test that it worked by attempting to execute the `samtools` binary. Remember that the `./` in `./samtools` tells the commandline that you want to execute the `samtools` binary in the current directory. We do this because there may be other `samtools` binaries in our PATH. Try `which samtools` to see the samtools binary that appears first in our PATH and therefore will be the one used when we specify `samtools` without specifying a particular location of the binary.
+
+```bash
+cd $RNA_HOME/student_tools/
+wget https://github.com/samtools/samtools/releases/download/1.18/samtools-1.18.tar.bz2
+bunzip2 samtools-1.18.tar.bz2
+tar -xvf samtools-1.18.tar
+cd samtools-1.18
+make
+./samtools
+```
+
+### [bam-readcount](https://github.com/genome/bam-readcount)
+
+Installation type: build C++ binary from source code using `cmake` and `make`. Citation: [PMID: 34341766](https://pubmed.ncbi.nlm.nih.gov/34341766/).
+
+Installation of the bam-readcount tool involves "cloning" the source code with a code version control system called `git`. The code is then compiled using `cmake` and `make`. `cmake` is an application for managing the build process of software using a compiler-independent method. It is used in conjunction with native build environments such as `make` ([cmake ref](https://en.wikipedia.org/wiki/CMake)). Note that bam-readcount relies on another tool, samtools, as a dependency. An environment variable is used to specify the path to the samtools install.
+
+```bash
+cd $RNA_HOME/student_tools/
+export SAMTOOLS_ROOT=$RNA_HOME/student_tools/samtools-1.18
+git clone https://github.com/genome/bam-readcount 
+cd bam-readcount
+mkdir build
+cd build
+cmake ..
+make
+./bin/bam-readcount
+```
+
+### [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
+
+Installation type: download a precompiled binary. Citation: [PMID: 31375807](https://pubmed.ncbi.nlm.nih.gov/31375807/).
+
+The `hisat2` aligner is installed below by simply downloading an archive of binaries using `wget`, unpacking them with `unzip`, and testing the tool to make sure it executes without error on the current system. This approach relies on understanding the architecture of your system and downloading the correct precompiled binary. The `uname -m` command lists the current system architecture.
+
+```bash
+uname -m
+cd $RNA_HOME/student_tools/
+curl -s https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download > hisat2-2.2.1-Linux_x86_64.zip
+unzip hisat2-2.2.1-Linux_x86_64.zip
+cd hisat2-2.2.1
+./hisat2 -h
+```
+
+### [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml?t=manual)
+
+Installation type: download a precompiled binary. Citation: [PMID: 25690850](https://pubmed.ncbi.nlm.nih.gov/25690850/).
+
+The `stringtie` reference guided transcript assembly and abundance estimation tool is installed below by simply downloading an archive with `wget`, unpacking the archive with `tar`, and executing `stringtie` to confirm it runs without error on our system.
+
+```bash
+cd $RNA_HOME/student_tools/
+wget http://ccb.jhu.edu/software/stringtie/dl/stringtie-2.2.1.tar.gz
+tar -xzvf stringtie-2.2.1.tar.gz
+cd stringtie-2.2.1
+make release
+./stringtie -h
+```
+
+### [gffcompare](http://ccb.jhu.edu/software/stringtie/gff.shtml#gffcompare)
+
+Installation type: download a precompiled binary. Citation: [PMID: 25690850](https://pubmed.ncbi.nlm.nih.gov/25690850/).
+
+The `gffcompare` tool for comparing transcript annotations is installed below by simply downloading an archive with `wget`, unpacking it with `tar`, and executing `gffcompare` to ensure it runs without error on our system.
+
+```bash
+cd $RNA_HOME/student_tools/
+wget http://ccb.jhu.edu/software/stringtie/dl/gffcompare-0.12.6.Linux_x86_64.tar.gz
+tar -xzvf gffcompare-0.12.6.Linux_x86_64.tar.gz
+cd gffcompare-0.12.6.Linux_x86_64/
+./gffcompare
+```
+
+### [htseq-count](https://htseq.readthedocs.io/en/master/install.html)
+
+Installation type: pip install. Citation: [PMID: 25260700](https://pubmed.ncbi.nlm.nih.gov/25260700/).
+
+The htseq-count read counting tools is a python package that can be installed using `pip`.
+
+```bash
+pip3 install --user HTSeq
+```
+
+### [TopHat](https://ccb.jhu.edu/software/tophat/index.shtml)
+
+Installation type: dowload a precompiled binary. Citation: [PMID: 19289445](https://pubmed.ncbi.nlm.nih.gov/19289445/).
+
+Note, this tool is currently only installed for the gtf_to_fasta tool used in kallisto section.
+
+```bash
+cd $RNA_HOME/student_tools/
+wget http://genomedata.org/rnaseq-tutorial/tophat-2.1.1.Linux_x86_64.tar.gz
+tar -zxvf tophat-2.1.1.Linux_x86_64.tar.gz
+cd tophat-2.1.1.Linux_x86_64/
+./gtf_to_fasta
+```
+
+### [kallisto](https://pachterlab.github.io/kallisto/)
+
+Installation type: download a precompiled binary. Citation: [PMID: 27043002](https://pubmed.ncbi.nlm.nih.gov/27043002/).
+
+The kallisto alignment free expression estimation tool is installed below simply by downloading an archive with `wget`, unpacking the archive with `tar`, and testing the binary to ensure it runs on our system.
+
+```bash
+cd $RNA_HOME/student_tools/
+wget https://github.com/pachterlab/kallisto/releases/download/v0.44.0/kallisto_linux-v0.44.0.tar.gz
+tar -zxvf kallisto_linux-v0.44.0.tar.gz
+cd kallisto_linux-v0.44.0/
+./kallisto
+```
+
+### [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+Installation type: download precompiled binary. Citation: [s-andrews/FastQC](https://github.com/s-andrews/FastQC).
+
+```bash
+cd $RNA_HOME/student_tools/
+wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.12.1.zip
+unzip fastqc_v0.12.1.zip
+cd FastQC/
+chmod 755 fastqc
+./fastqc --help
+```
+
+### [Fastp](https://github.com/OpenGene/fastp)
+
+Installation type: download precompiled binary. Citation: [PMID: 30423086](https://pubmed.ncbi.nlm.nih.gov/30423086/)
+
+```bash
+cd $RNA_HOME/student_tools/
+mkdir fastp
+cd fastp
+wget http://opengene.org/fastp/fastp
+chmod a+x ./fastp
+./fastp
+```
+
+
+### [MultiQC](http://multiqc.info/)
+
+Installation type: use pip. Citation: [PMID: 27312411](https://pubmed.ncbi.nlm.nih.gov/27312411/).
+
+Multiqc, a tool for assembling QC reports is a python package that can be installed using the python package manager `pip`.
+
+```bash
+pip3 install multiqc
+export PATH=/home/ubuntu/.local/bin:$PATH
+multiqc --help
+```
+
+### [Picard](https://broadinstitute.github.io/picard/)
+
+Installation type: download java jar file. Citation: [broadinstitute/picard](https://github.com/broadinstitute/picard).
+
+Picard is a rich tool kit for BAM file manipulation that is installed below simply by downloading a jar file. The jar file is tested using Java, a dependency that must also be installed (it should already be present in many systems).
+
+```bash
+cd $RNA_HOME/student_tools/
+wget https://github.com/broadinstitute/picard/releases/download/2.26.4/picard.jar -O picard.jar
+java -jar $RNA_HOME/student_tools/picard.jar
+```
+
+### [RegTools](https://github.com/griffithlab/regtools#regtools)
+
+Installation type: compile from source code using `cmake` and `make`. Citation: [bioRXiv: 10.1101/436634v2](https://www.biorxiv.org/content/10.1101/436634v2).
+
+```bash
+cd $RNA_HOME/student_tools/
+git clone https://github.com/griffithlab/regtools
+cd regtools/
+mkdir build
+cd build/
+cmake ..
+make
+./regtools
+```
+
+### [RSeQC](http://rseqc.sourceforge.net/)
+
+Installation type: use pip. Citation: [PMID: 22743226](https://pubmed.ncbi.nlm.nih.gov/22743226/).
+
+```bash
+pip3 install RSeQC
+read_GC.py
+```
+
+### [bedops](https://bedops.readthedocs.io/en/latest/)
+
+Installation type: download precompiled binary. Citation: [PMID: 22576172](https://pubmed.ncbi.nlm.nih.gov/22576172/).
+
+```bash
+cd $RNA_HOME/student_tools/
+mkdir bedops_linux_x86_64-v2.4.41
+cd bedops_linux_x86_64-v2.4.41
+wget -c https://github.com/bedops/bedops/releases/download/v2.4.41/bedops_linux_x86_64-v2.4.41.tar.bz2
+tar -jxvf bedops_linux_x86_64-v2.4.41.tar.bz2
+./bin/bedops
+```
+
+### [gtfToGenePred](https://bioconda.github.io/recipes/ucsc-gtftogenepred/README.html)
+
+Installation type: download precompiled binary.
+
+```bash
+cd $RNA_HOME/student_tools/
+mkdir gtfToGenePred
+cd gtfToGenePred
+wget -c http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred
+chmod a+x gtfToGenePred
+./gtfToGenePred
+```
+
+### [genePredToBed](https://bioconda.github.io/recipes/ucsc-genepredtobed/README.html)
+
+Installation type: download precompiled binary.
+
+```bash
+cd $RNA_HOME/student_tools/
+mkdir genePredToBed
+cd genePredToBed
+wget -c http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/genePredToBed
+chmod a+x genePredToBed
+./genePredToBed
+```
+
+### [how_are_we_stranded_here](https://github.com/betsig/how_are_we_stranded_here)
+
+```bash
+pip3 install git+https://github.com/kcotto/how_are_we_stranded_here.git
+check_strandedness
+```
+
+### Install [Cell Ranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
+
+* Must register to get download link, modify command below to match downloaded tar
+
+```bash
+cd $RNA_HOME/student_tools/
+wget `download_link`
+tar -xzvf cellranger-7.2.0.tar.gz
+```
+
+### Install [R](http://www.r-project.org/)
+
+```bash
+#sudo apt-get remove r-base-core
+
+#wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo gpg --dearmor -o /usr/share/keyrings/r-project.gpg
+#echo "deb [signed-by=/usr/share/keyrings/r-project.gpg] https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" | sudo tee -a /etc/apt/sources.list.d/r-project.list
+#sudo apt update
+#sudo apt install --no-install-recommends r-base
+```
+
+Note, if X11 libraries are not available you may need to use `--with-x=no` during config, on a regular linux system you would not use this option.
+Also, linking the R-patched `bin` directory into your `PATH` may cause weird things to happen, such as man pages or `git log` to not display. This can be circumvented by directly linking the `R*` executables (`R`, `RScript`, `RCmd`, etc.) into a `PATH` directory.
+
+### R Libraries
+
+Installation type: add new base R libraries to an R installation.
+
+For this tutorial we require:
+
+* [devtools](https://cran.r-project.org/web/packages/devtools/index.html)
+* [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html)
+* [gplots](http://cran.r-project.org/web/packages/gplots/index.html)
+* [ggplot2](https://ggplot2.tidyverse.org/)
+
+launch R (enter `R` at linux command prompt) and type the following at an R command prompt. NOTE: This has been pre-installed for you, so these commands can be skipped.
+
+```bash
+#R
+#install.packages(c("devtools","dplyr","gplots","ggplot2"),repos="http://cran.us.r-project.org")
+#quit(save="no")
+```
+
+### [Bioconductor](http://www.bioconductor.org/)
+
+Installation type: add bioconductor libraries to an R installation. Citation: [PMID: 15461798](https://pubmed.ncbi.nlm.nih.gov/15461798/).
+
+For this tutorial we require:
+
+* [genefilter](http://bioconductor.org/packages/release/bioc/html/genefilter.html)
+* [ballgown](http://bioconductor.org/packages/release/bioc/html/ballgown.html). Citation: [PMID: 25748911](https://pubmed.ncbi.nlm.nih.gov/25748911/).
+* [edgeR](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html). Citation: [PMID: 19910308](https://pubmed.ncbi.nlm.nih.gov/19910308/).
+* [GenomicRanges](http://bioconductor.org/packages/release/bioc/html/GenomicRanges.html)
+* [rhdf5](https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html)
+* [biomaRt](https://bioconductor.org/packages/release/bioc/html/biomaRt.html). Citation: [PMID: 21930506](https://pubmed.ncbi.nlm.nih.gov/21930506/).
+
+launch R (enter `R` at linux command prompt) and type the following at an R command prompt. If prompted, type "a" to update all old packages. NOTE: This has been pre-installed for you, so these commands can be skipped.
+
+```bash
+#R
+#source("http://bioconductor.org/biocLite.R")
+#biocLite(c("genefilter","ballgown","edgeR","GenomicRanges","rhdf5","biomaRt"))
+#quit(save="no")
+```
+
+### [Sleuth](https://pachterlab.github.io/sleuth/download)
+
+Installation type: R package installation from a git repository. Citation: [PMID: 28581496](https://pubmed.ncbi.nlm.nih.gov/28581496/).
+
+```bash
+#R
+#install.packages("devtools")
+#devtools::install_github("pachterlab/sleuth")
+#quit(save="no")
+```
+
+***
+
+### PRACTICAL EXERCISE 1 - Software Installation
+
+Assignment: Install bedtools on your own. Make sure you install it in your tools folder. Download, unpack, compile, and test the bedtools software. Citation: [PMID: 20110278](https://pubmed.ncbi.nlm.nih.gov/20110278/).
+
+```bash
+cd $RNA_HOME/student_tools/
+```
+
+* Hint: google "bedtools" to find the source code
+* Hint: there is a README file that will give you hints on how to install
+* Hint: If your install has worked you should be able to run bedtools as follows:
+
+```bash
+$RNA_HOME/student_tools/bedtools2/bin/bedtools
+```
+
+#### Questions
+
+* What happens when you run bedtools without any options?
+* Where can you find detailed documentation on how to use bedtools?
+* How many general categories of analysis can you perform with bedtools? What are they?
+
+Solution: When you are ready you can check your approach against the [Solutions]()
+
+***
+
+### Add locally installed tools to your PATH [OPTIONAL]
+
+To use the locally installed version of each tool without having to specify complete paths, you could add the install directory of each tool to your '$PATH' variable and set some other environment variables:
+
+```bash
+PATH=$RNA_HOME/student_tools/genePredToBed:$RNA_HOME/student_tools/gtfToGenePred:$RNA_HOME/student_tools/bedops_linux_x86_64-v2.4.41/bin:$RNA_HOME/student_tools/samtools-1.18:$RNA_HOME/student_tools/bam-readcount/bin:$RNA_HOME/student_tools/hisat2-2.2.1:$RNA_HOME/student_tools/stringtie-2.2.1:$RNA_HOME/student_tools/gffcompare-0.12.6.Linux_x86_64:$RNA_HOME/student_tools/tophat-2.1.1.Linux_x86_64:$RNA_HOME/student_tools/kallisto_linux-v0.44.0:$RNA_HOME/student_tools/FastQC:$RNA_HOME/student_tools/fastp:$RNA_HOME/student_tools/regtools/build:/home/ubuntu/bin/bedtools2/bin:/home/ubuntu/.local/bin:$PATH
+
+echo $PATH
+
+export PICARD=$RNA_HOME/student_tools/picard.jar
+```
+
+You can make these changes permanent by adding the above lines to your .bashrc file
+use a text editor to open your bashrc file. For example:
+
+```bash
+vi ~/.bashrc
+```
+
+#### Vi instructions
+
+1. Using your cursor, navigate down to the "export PATH" commands at the end of the file.
+2. Delete the line starting with PATH using the vi command "dd".
+3. Press the "i" key to enter insert mode. Go to an empty line with you cursor and copy paste the new RNA_HOME and PATH commands into the file
+4. Press the "esc" key to exit insert mode.
+5. Press the ":" key to enter command mode.
+6. Type "wq" to save and quit vi
+
+If you would like to learn more about how to use vi, try this tutorial/game: [VIM Adventures](http://vim-adventures.com/)
+
+NOTE: If you are worried your .bashrc is messed up you can redownload as follows:
+
+```bash
+cd ~
+wget http://genomedata.org/rnaseq-tutorial/bashrc_copy
+mv bashrc_copy ~/.bashrc
+source ~/.bashrc
+```
+
+### Installing tools from official ubuntu packages [OPTIONAL]
+
+Some useful tools are available as official ubuntu packages.  These can be installed using the linux package management system `apt`.  Most bioinformatic tools (especially the latest versions) are not available as official packages.  Nevertheless, here is how you would update your `apt` library, upgrade existing packages, and install an Ubuntu tool called `tree`.
+
+```bash
+#sudo apt-get update
+#sudo apt-get upgrade
+#sudo apt-get install tree
+#tree
+```
+
+### Installing tools by Docker image
+
+Some tools have complex dependencies that are difficult to reproduce across systems or make work in the same environment with tools that require different versions of the same dependencies. Container systems such as Docker and Singularity allow you to isolate a tool's environment giving you almost complete control over dependency issues. For this reason, many tool developers have started to distribute their tools as docker images.  Many of these are placed in container image repositories such as [DockerHub](https://hub.docker.com/). Here is an example tool installation using `docker`.
+
+Install samtools:
+
+```bash
+docker pull biocontainers/samtools:v1.9-4-deb_cv1
+docker run -t biocontainers/samtools:v1.9-4-deb_cv1 samtools --help
+```
+
+Install pvactools for personalized cancer vaccine designs:
+
+```bash
+#docker pull griffithlab/pvactools:latest
+#docker run -t griffithlab/pvactools:latest pvacseq --help
+
+```
+
+### Installing tools by Docker image (using Singularity)
+
+Some systems do not allow `docker` to be run for various reasons. Sometimes `singularity` is used instead.  The equivalent to the above but using singularity looks like the following:
+
+```bash
+#singularity pull docker://griffithlab/pvactools:latest
+#singularity run docker://griffithlab/pvactools:latest pvacseq -h
+
+```
+
+Note that if you encounter errors with /tmp space usage or would like to control where singularity stores its temp files, you can set the environment variables:
+
+```bash
+#export SINGULARITY_CACHEDIR=/media/workspace/.singularity
+#export TMPDIR=/media/workspace/temp
+
+```
+
 
 # Module 1
 
@@ -11,3 +547,451 @@
 
 ## Labs
 [Module 1 Labs](https://rnabio.org/module-01-inputs/0001/01/01/Intro_to_Inputs/)
+
+
+### Module 1 - Key concepts
+* Review central dogma, RNA sequencing, RNAseq study design, library construction strategies, biological vs technical replicates, alignment strategies, etc.
+
+### Module 1 - Learning objectives
+* Introduction to the theory and practice of RNA sequencing (RNA-seq) analysis
+* Rationale for sequencing RNA
+* Challenges specific to RNA-seq
+* General goals and themes of RNA-seq analysis work flows
+* Common technical questions related to RNA-seq analysis
+* Getting help outside of this course
+* Introduction to the RNA-seq hands on tutorial
+
+
+### Lecture
+* [Introduction to RNA sequencing lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2025/full/RNASeq_Module1_IntrotoRNA.pdf)
+* [FASTA/FASTQ/GTF formats mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf)
+* [Indexing mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2025/mini/RNASeq_MiniLecture_01_02_Indexing.pdf)
+
+
+***
+
+![RNA-seq_Flowchart](img/module_1/RNA-seq_Flowchart2.png)\
+
+***
+
+### FASTA/FASTQ/GTF mini lecture
+If you would like a refresher on common file formats such as FASTA, FASTQ, and GTF files, we have made a [mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf) briefly covering these.
+
+### Obtain a reference genome from Ensembl, iGenomes, NCBI or UCSC.
+
+In this example analysis we will use the human GRCh38 version of the genome from Ensembl. Furthermore, we are actually going to perform the analysis using only a single chromosome (chr22) and the ERCC spike-in to make it run faster.
+
+First we will create the necessary working directory.
+```bash
+cd $RNA_HOME
+echo $RNA_REFS_DIR
+mkdir -p $RNA_REFS_DIR
+
+```
+The complete data from which these files were obtained can be found at: [ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/dna/](ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/dna/). You could use wget to download the Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz file, then unzip/untar.
+
+We have prepared this simplified reference for you. It contains chr22 (and ERCC transcript) fasta files in both a single combined file and individual files. Download the reference genome file to the rnaseq working directory
+
+```bash
+cd $RNA_REFS_DIR
+wget http://genomedata.org/rnaseq-tutorial/fasta/GRCh38/chr22_with_ERCC92.fa
+ls
+
+```
+
+View the first 10 lines of this file. Why does it look like this?
+```bash
+head chr22_with_ERCC92.fa
+
+```
+
+How many lines and characters are in this file? How long is this chromosome (in bases and Mbp)?
+```bash
+wc chr22_with_ERCC92.fa
+
+```
+
+View 10 lines from approximately the middle of this file. What is the significance of the upper and lower case characters?
+```bash
+head -n 425000 chr22_with_ERCC92.fa | tail
+
+```
+
+What is the count of each base in the entire reference genome file (skipping the header lines for each sequence)?
+
+```bash
+cat chr22_with_ERCC92.fa | grep -v ">" | perl -ne 'chomp $_; $bases{$_}++ for split //; if (eof){print "$_ $bases{$_}\n" for sort keys %bases}'
+
+```
+
+Note: Instead of the above, you might consider getting reference genomes and associated annotations from [UCSC. e.g., UCSC GRCh38 download](http://hgdownload.cse.ucsc.edu/goldenPath/hg38/chromosomes/).
+
+Wherever you get them from, remember that the names of your reference sequences (chromosomes) must those matched in your annotation gtf files (described in the next section).
+
+View a list of all sequences in our reference genome fasta file.
+
+```bash
+grep ">" chr22_with_ERCC92.fa
+
+```
+
+***
+
+### Note on complex commands and scripting in Unix
+Take a closer look at the command above that counts the occurrence of each nucleotide base in our chr22 reference sequence. Note that for even a seemingly simple question, commands can become quite complex. In that approach, a combination of Unix commands, pipes, and the scripting language Perl are used to answer the question. In bioinformatics, generally this kind of scripting comes up before too long, because you have an analysis question that is so specific there is no out of the box tool available. Or an existing tool will give perform a much more complex and involved analysis than needed to answer a very focused question.
+
+In Unix there are usually many ways to solve the same problem. Perl as a language has mostly fallen out of favor. This kind of simple text parsing problem is one area it perhaps still remains relevant. Let's benchmark the run time of the previous approach and constrast with several alternatives that do not rely on Perl.
+
+Each of the following gives exactly the same answer. `time` is used to measure the run time of each alternative. Each starts by using `cat` to dump the file to standard out and then using `grep` to remove the header lines starting with ">". Each ends with `column -t` to make the output line up consistently.
+
+```
+#1. The Perl approach. This command removes the end of line character with chomp, then it splits each line into an array of individual characters, amd it creates a data structure called a hash to store counts of each letter on each line. Once the end of the file is reached it prints out the contents of this data structure in order.  
+time cat chr22_with_ERCC92.fa | grep -v ">" | perl -ne 'chomp $_; $bases{$_}++ for split //; if (eof){print "$bases{$_} $_\n" for sort keys %bases}' | column -t
+
+#2. The Awk approach. Awk is an alternative scripting language include in most linux distributions. This command is conceptually very similar to the Perl approach but with a different syntax. A for loop is used to iterate over each character until the end ("NF") is reached. Again the counts for each letter are stored in a simple data structure and once the end of the file is reach the results are printed.  
+time cat chr22_with_ERCC92.fa | grep -v ">" | awk '{for (i=1; i<=NF; i++){a[$i]++}}END{for (i in a){print a[i], i}}' FS= - | sort -k 2 | column -t
+
+#3. The Sed approach. Sed is an alternative scripting language. "tr" is used to remove newline characters. Then sed is used simply to split each character onto its own line, effectively creating a file with millions of lines. Then unix sort and uniq are used to produce counts of each unique character, and sort is used to order the results consistently with the previous approaches.
+time cat chr22_with_ERCC92.fa | grep -v ">" | tr -d '\n' | sed 's/\(.\)/\1\n/g'  - | sort | uniq -c | sort -k 2 | column -t
+
+#4. The grep appoach. The "-o" option of grep splits each match onto a line which we then use to get a count. The "-i" option makes the matching work for upper/lower case. The "-P" option allows us to use Perl style regular expressions with Greg.
+time cat chr22_with_ERCC92.fa | grep -v ">" | grep -i -o -P "a|c|g|t|y|n" | sort | uniq -c
+
+#5. Finally, the simplest/shortest approach that leverages the unix fold command to split each character onto its own line as in the Sed example.
+time cat chr22_with_ERCC92.fa | grep -v ">" | fold -w1 | sort | uniq -c | column -t
+
+
+```
+Which method is fastest? Why are the first two approaches so much faster than the others?
+
+***
+
+### PRACTICAL EXERCISE 2 (ADVANCED)
+Assignment: Use a commandline scripting approach of your choice to further examine our chr22 reference genome file and answer the following questions.
+
+Questions:
+- How many bases on chromosome 22 correspond to repetitive elements?
+- What is the percentage of the whole length?
+- How many occurences of the EcoRI (GAATTC) restriction site are present in the chromosome 22 sequence?
+
+Hint: Each question can be tackled using approaches similar to those above, using the file 'chr22_with_ERCC92.fa' as a starting point.
+Hint: To make things simpler, first produce a file with only the chr22 sequence.
+Hint: Remember that repetitive elements in the sequence are represented in lower case
+
+Solution: When you are ready you can check your approach against the [Solutions]().
+
+### FASTA/FASTQ/GTF mini lecture
+If you would like a refresher on common file formats such as FASTA, FASTQ, and GTF files, we have made a [mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf) briefly covering these.
+
+
+### Obtain Known Gene/Transcript Annotations
+
+In this tutorial we will use annotations obtained from Ensembl ([Homo_sapiens.GRCh38.86.gtf.gz](ftp://ftp.ensembl.org/pub/release-86/gtf/homo_sapiens/Homo_sapiens.GRCh38.86.gtf.gz)) for chromosome 22 only. For time reasons, these are prepared for you and made available on your AWS instance. But you should get familiar with sources of gene annotations for RNA-seq analysis.
+
+Copy the gene annotation files to the working directory.
+
+```bash
+echo $RNA_REFS_DIR
+cd $RNA_REFS_DIR
+wget http://genomedata.org/rnaseq-tutorial/annotations/GRCh38/chr22_with_ERCC92.gtf
+
+```
+
+Take a look at the contents of the .gtf file. Press `q` to exit the `less` display.
+
+```bash
+echo $RNA_REF_GTF
+less -p start_codon -S $RNA_REF_GTF
+
+```
+
+Note how the `-S` option makes it easier to veiw this file with `less`. Make the formatting a bit nicer still:
+```bash
+cat chr22_with_ERCC92.gtf | column -t | less -p exon -S
+```
+
+How many unique gene IDs are in the .gtf file?
+
+We can use a perl command-line command to find out:
+
+```bash
+perl -ne 'if ($_ =~ /(gene_id\s\"ENSG\w+\")/){print "$1\n"}' $RNA_REF_GTF | sort | uniq | wc -l
+
+```
+
+* Using `perl -ne ''` will execute the code between single quotes, on the .gtf file, line-by-line.
+
+* The `$_` variable holds the contents of each line.
+
+* The `'if ($_ =~//)'` is a pattern-matching command which will look for the pattern "gene_id" followed by a space followed by "ENSG" and one or more word characters (indicated by `\w+`) surrounded by double quotes.
+
+* The pattern to be matched is enclosed in parentheses. This allows us to print it out from the special variable `$1`.
+
+* The output of this perl command will be a long list of ENSG Ids.
+
+* By piping to `sort`, then `uniq`, then word count we can count the unique number of genes in the file.
+
+We can also use `grep` to find this same information.
+
+```bash
+cat chr22_with_ERCC92.gtf | grep -w gene | wc -l
+
+```
+
+* `grep -w gene` is telling grep to do an exact match for the string 'gene'. This means that it will return lines that are of the feature type `gene`.
+
+
+Now view the structure of a single transcript in GTF format. Press `q` to exit the `less` display when you are done.
+
+```bash
+grep ENST00000342247 $RNA_REF_GTF | less -p "exon\s" -S
+
+```
+
+To learn more, see:
+
+* [http://perldoc.perl.org/perlre.html#Regular-Expressions](http://perldoc.perl.org/perlre.html#Regular-Expressions)
+* [http://www.perl.com/pub/2004/08/09/commandline.html](http://www.perl.com/pub/2004/08/09/commandline.html)
+
+### Definitions:
+**Reference genome** - The nucleotide sequence of the chromosomes of a species. Genes are the functional units of a reference genome and gene annotations describe the structure of transcripts expressed from those gene loci.
+
+**Gene annotations** - Descriptions of gene/transcript models for a genome. A transcript model consists of the coordinates of the exons of a transcript on a reference genome. Additional information such as the strand the transcript is generated from, gene name, coding portion of the transcript, alternate transcript start sites, and other information may be provided.
+
+**GTF (.gtf) file** - A common file format referred to as Gene Transfer Format used to store gene and transcript annotation information. You can learn more about this format here: [http://genome.ucsc.edu/FAQ/FAQformat#format4](http://genome.ucsc.edu/FAQ/FAQformat#format4)
+
+### The Purpose of Gene Annotations (.gtf file)
+When running the HISAT2/StringTie/Ballgown pipeline, known gene/transcript annotations are used for several purposes:
+
+* During the HISAT2 index creation step, annotations may be provided to create local indexes to represent transcripts as well as a global index for the entire reference genome. This allows for faster mapping and better mapping across exon boundaries and splice sites. If an alignment still can not be found it will attempt to determine if the read corresponds to a novel exon-exon junction. See the [Indexing section](/module-01-inputs/0001/04/01/Indexing/) and the HISAT2 publication for more details.
+
+* During the StringTie step, a .gtf file can be used to specify transcript models to guide the assembly process and limit expression estimates to predefined transcripts using the `-G` and `-e` options together. The `-e` option will give you one expression estimate for each of the transcripts in your .gtf file, giving you a 'microarray like' expression result.
+
+* During the StringTie step, if the `-G` option is specified without the `-e` option the .gtf file is used only to 'guide' the assembly of transcripts. Instead of assuming only the known transcript models are correct, the resulting expression estimates will correspond to both known and novel/predicted transcripts.
+
+* During the StringTie and gffcompare steps, a .gtf file is used to determine the transcripts that will be examined for differential expression using Ballgown. These may be known transcripts that you download from a public source, or a .gtf of transcripts predicted by StringTie from the read data in an earlier step.
+
+### Sources for obtaining gene annotation files formatted for HISAT2/StringTie/Ballgown
+There are many possible sources of .gtf gene/transcript annotation files. For example, from Ensembl, UCSC, RefSeq, etc. Several options and related instructions for obtaining the gene annotation files are provided below.
+
+#### I. ENSEMBL FTP SITE
+
+Based on Ensembl annotations only. Available for many species. [http://useast.ensembl.org/info/data/ftp/index.html](http://useast.ensembl.org/info/data/ftp/index.html)
+
+#### II. UCSC TABLE BROWSER
+
+Based on UCSC annotations or several other possible annotation sources collected by UCSC. You might chose this option if you want to have a lot of flexibility in the annotations you obtain. e.g. to grab only the transcripts from chromosome 22 as in the following example:
+
+* Open the following in your browser: [http://genome.ucsc.edu/](http://genome.ucsc.edu/)
+* Select 'Tools' and then 'Table Browser' at the top of the page.
+* Select 'Mammal', 'Human', and 'Dec. 2013 (GRCh38/hg38)' from the first row of drop down menus.
+* Select 'Genes and Gene Predictions' and 'GENCODE v29' from the second row of drop down menus. To limit your selection to only chromosome 22, select the 'position' option beside 'region', enter 'chr22' in the 'position' box.
+* Select 'GTF - gene transfer format' for output format and enter 'UCSC_Genes.gtf' for output file.
+* Hit the 'get output' button and save the file. Make note of its location
+
+In addition to the .gtf file you may find uses for some extra files providing alternatively formatted or additional information on the same transcripts. For example:
+
+##### How to get a Gene bed file:
+
+* Change the output format to 'BED - browser extensible data'.
+* Change the output file to 'UCSC_Genes.bed', and hit the 'get output' button.
+* Make sure 'Whole Gene' is selected, hit the 'get BED' button, and save the file.
+
+##### How to get an Exon bed file:
+
+* Go back one page in your browser and change the output file to 'UCSC_Exons.bed', then hit the 'get output' button again.
+* Select 'Exons plus', enter 0 in the adjacent box, hit the 'get BED' button, and save the file.
+
+##### How to get gene symbols and descriptions for all UCSC genes:
+
+* Again go back one page in your browser and change the 'output format' to 'selected fields from primary and related tables'.
+* Change the output file to 'UCSC_Names.txt', and hit the 'get output' button.
+* Make sure 'chrom' is selected near the top of the page.
+* Under 'Linked Tables' make sure 'kgXref' is selected, and then hit 'Allow Selection From Checked Tables'. This will link the table and give you access to its fields.
+* Under 'hg38.kgXref fields' select: 'kgID', 'geneSymbol', 'description'.
+* Hit the 'get output' button and save the file.
+* To get annotations for the whole genome, make sure 'genome' is selected beside 'region'. By default, the files downloaded above will be compressed. To decompress, use 'gunzip filename' in linux.
+
+#### III. HISAT2 Precomputed Genome Index
+
+HISAT2 has prebuilt reference genome index files for both DNA and RNA alignment. Various versions of the index files include SNPs and/or transcript splice sites. Versions of both the Ensembl and UCSC genomes for human build 38 are linked from the main HISAT2 page: [https://ccb.jhu.edu/software/hisat2/index.shtml](https://ccb.jhu.edu/software/hisat2/index.shtml)
+
+Or those same files are directly available from their FTP site: [ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/](ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/)
+
+### Important notes:
+**On chromosome naming conventions:**
+In order for your RNA-seq analysis to work, the chromosome names in your .gtf file must match those in your reference genome (i.e. your reference genome fasta file). If you get a StringTie result where all transcripts have an expression value of 0, you may have overlooked this. Unfortunately, Ensembl, NCBI, and UCSC can not agree on how to name the chromosomes in many species, so this problem may come up often. You can avoid this by getting a complete reference genome and gene annotation package from the same source (e.g., Ensembl) to maintain consistency.
+
+**On reference genome builds:**
+Your annotations must correspond to the same reference genome build as your reference genome fasta file. e.g., both correspond to UCSC human build 'hg38', NCBI human build 'GRCh38', etc. Even if both your reference genome and annotations are from UCSC or Ensembl they could still correspond to different versions of that genome. This would cause problems in any RNA-seq pipeline.
+
+A more detailed discussion of commonly used version of the human reference genome can be found in a companion workshop [PMBIO Reference Genomes](https://pmbio.org/module-02-inputs/0002/02/01/Reference_Genome/).
+
+### Indexing mini lecture
+If you want a refresher on indexing, we have made an [indexing mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2025/mini/RNASeq_MiniLecture_01_02_Indexing.pdf) available.
+
+### Create a HISAT2 index
+Create a HISAT2 index for chr22 and the ERCC spike-in sequences. HISAT2 can incorporate exons and splice sites into the index file for alignment. First create a splice site file, then an exon file. Finally make the aligner FM index.
+
+To learn more about how the HISAT2 indexing strategy is distinct from other next gen aligners refer to the [HISAT publication](https://www.ncbi.nlm.nih.gov/pubmed/25751142).
+
+```bash
+cd $RNA_REFS_DIR
+hisat2_extract_splice_sites.py $RNA_REF_GTF > $RNA_REFS_DIR/splicesites.tsv
+hisat2_extract_exons.py $RNA_REF_GTF > $RNA_REFS_DIR/exons.tsv
+hisat2-build -p 4 --ss $RNA_REFS_DIR/splicesites.tsv --exon $RNA_REFS_DIR/exons.tsv $RNA_REF_FASTA $RNA_REF_INDEX
+ls
+
+```
+
+Perform a visual survey on the contents of your refs directory. What is the source/purpose of each file.
+
+**[OPTIONAL]** To create an index for all chromosomes instead of just chr22 you would do something like the following:
+
+**WARNING:** In order to index the entire human genome, HISAT2 requires 160GB of RAM. Your AWS instance size will run out of RAM.
+
+```bash
+#hisat2_extract_splice_sites.py Homo_sapiens.GRCh38.86.gtf > splicesites.tsv
+#hisat2_extract_exons.py Homo_sapiens.GRCh38.86.gtf > exons.tsv
+#hisat2-build -p 4 --ss splicesites.tsv --exon exons.tsv Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa Homo_sapiens.GRCh38.dna_sm.primary_assembly
+```
+
+### Obtain RNA-seq test data.
+The test data consists of two commercially available RNA samples: [Universal Human Reference (UHR)](/assets/module_1/UHR.pdf) and [Human Brain Reference (HBR)](/assets/module_1/HBR.pdf). The UHR is total RNA isolated from a diverse set of 10 cancer cell lines (breast, liver, cervix, testis, brain, skin, fatty tissue, histocyte, macrophage, T cell, B cell). The HBR is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old.
+
+In addition, a spike-in control was used. Specifically we added an aliquot of the [ERCC ExFold RNA Spike-In Control Mixes](/assets/module_1/ERCC.pdf) to each sample. The spike-in consists of 92 transcripts that are present in known concentrations across a wide abundance range (from very few copies to many copies). This range allows us to test the degree to which the RNA-seq assay (including all laboratory and analysis steps) accurately reflects the relative abundance of transcript species within a sample. There are two 'mixes' of these transcripts to allow an assessment of differential expression output between samples if you put one mix in each of your two comparisons. In our case, Mix1 was added to the UHR sample, and Mix2 was added to the HBR sample. We also have 3 complete experimental replicates for each sample. This allows us to assess the technical variability of our overall process of producing RNA-seq data in the lab.
+
+For all libraries we prepared low-throughput (Set A) TruSeq Stranded Total RNA Sample Prep Kit libraries with Ribo-Zero Gold to remove both cytoplasmic and mitochondrial rRNA. Triplicate, indexed libraries were made starting with 100ng Agilent/Strategene Universal Human Reference total RNA and 100ng Ambion Human Brain Reference total RNA. The Universal Human Reference replicates received 2 ul of 1:1000 ERCC Mix 1. The Human Brain Reference replicates received 1:1000 ERCC Mix 2. The libraries were quantified with KAPA Library Quantification qPCR and adjusted to the appropriate concentration for sequencing. The triplicate, indexed libraries were then pooled prior to sequencing. Each pool of three replicate libraries were sequenced across 2 lanes of a HiSeq 2000 using paired-end sequence chemistry with 100bp read lengths.
+
+So to summarize we have:
+
+* UHR + ERCC Spike-In Mix1, Replicate 1
+* UHR + ERCC Spike-In Mix1, Replicate 2
+* UHR + ERCC Spike-In Mix1, Replicate 3
+* HBR + ERCC Spike-In Mix2, Replicate 1
+* HBR + ERCC Spike-In Mix2, Replicate 2
+* HBR + ERCC Spike-In Mix2, Replicate 3
+
+Each data set has a corresponding pair of FASTQ files (read 1 and read 2 of paired end reads).
+
+```bash
+echo $RNA_DATA_DIR
+mkdir -p $RNA_DATA_DIR
+cd $RNA_DATA_DIR
+wget http://genomedata.org/rnaseq-tutorial/HBR_UHR_ERCC_ds_5pc.tar
+
+```
+
+Unpack the test data using tar. You should see 6 sets of paired end fastq files. One for each of our sample replicates above. We have 6 pairs (12 files) because in fastq format, read 1 and read 2 of a each read pair (fragment) are stored in separate files.
+
+```bash
+tar -xvf HBR_UHR_ERCC_ds_5pc.tar
+ls
+
+```
+
+Enter the data directory and view the first two read records of a file (in fastq format each read corresponds to 4 lines of data)
+
+The reads are paired-end 101-mers generated on an Illumina HiSeq instrument. The test data has been pre-filtered for reads that appear to map to chromosome 22. Lets copy the raw input data to our tutorial working directory.
+```bash
+zcat UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz | head -n 8
+
+```
+
+Identify the following components of each read: read name, read sequence, and quality string
+
+How many reads are there in the first library? Decompress file on the fly with 'zcat', pipe into 'grep', search for the read name prefix and pipe into 'wc' to do a word count ('-l' gives lines)
+
+```bash
+zcat UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz | grep -P "^\@HWI" | wc -l
+
+```
+
+### Determining the strandedness of RNA-seq data (Optional)
+
+In order to determine strandedness, we will be using [check_strandedness](https://github.com/betsig/how_are_we_stranded_here)([docker image](https://hub.docker.com/r/mgibio/checkstrandedness)). In order use this tool, there are a few steps we need to get our inputs ready, specifically creating a fasta of our GTF file.
+
+To create a transcripts FASTA file from our reference transcriptome in GTF format we need to get our transcript information into BED12 format. To get to that format we will convert GTF -> GenePred -> BED12. The GenePred format is just an intermediate that we create because we did not find a tool that would convert straight from GTF to BED12. 
+
+Once we have our transcriptome information (the position of exons for each transcript on each chromosome) we can use `bedtools getfasta` to splice the exon sequences from the chromosome sequence together into a full length transcript sequence.
+
+```bash
+cd $RNA_HOME/refs/
+
+# Convert our reference transcriptome GTF to genePred format
+gtfToGenePred chr22_with_ERCC92.gtf chr22_with_ERCC92.genePred
+
+# Convert the genPred format to bed12 format
+genePredToBed chr22_with_ERCC92.genePred chr22_with_ERCC92.bed12
+
+# Use bedtools to create fasta from GTF
+bedtools getfasta -fi chr22_with_ERCC92.fa -bed chr22_with_ERCC92.bed12 -s -split -name -fo chr22_ERCC92_transcripts.fa
+
+```
+
+Use less to view the file chr22_ERCC92_transcripts.fa. Note that this file has messy transcript names. Use the following hairball perl one-liner to tidy up the header line for each fasta sequence.
+
+```bash
+cd $RNA_HOME/refs
+cat chr22_ERCC92_transcripts.fa | perl -ne 'if($_ =~/^\>\S+\:\:(ERCC\-\d+)\:.*/){print ">$1\n"}elsif ($_ =~/^\>(\S+)\:\:.*/){print ">$1\n"}else{print $_}' > chr22_ERCC92_transcripts.clean.fa
+
+```
+
+View the resulting ‘clean’ file using `less chr22_ERCC92_transcripts.clean.fa` (use 'q' to exit). View the end of this file using `tail chr22_ERCC92_transcripts.clean.fa`. Note that we have one fasta record for each Ensembl transcript on chromosome 22 and we have an additional fasta record for each ERCC spike-in sequence.
+
+We also need to reformat our GTF file slightly. Rows that correspond to genes are missing the "transcript_id" field. We are going to add in this field but leave it blank for these rows using the following command.
+
+```bash
+cd $RNA_HOME/refs
+awk '{ if ($0 ~ "transcript_id") print $0; else print $0" transcript_id \"\";"; }' chr22_with_ERCC92.gtf > chr22_with_ERCC92_tidy.gtf
+
+```
+
+Now that we have created our input files, we can now run the check_strandedness tool on some of our instrument data. Note: we are using a docker image for this tool.
+
+```bash
+docker run -v /home/ubuntu/workspace/rnaseq:/docker_workspace mgibio/checkstrandedness:latest check_strandedness --gtf /docker_workspace/refs/chr22_with_ERCC92_tidy.gtf --transcripts /docker_workspace/refs/chr22_ERCC92_transcripts.clean.fa --reads_1 /docker_workspace/data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz --reads_2 /docker_workspace/data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz
+```
+`docker run` is how you initialize a docker container to run a command
+
+`-v` is the parameter used to mount your workspace so that the docker container can see the files that you're working with. In the example above, `/home/ubuntu/workspace/rnaseq` from the EC2 instance has been mounted as `/docker_workspace` within the docker container. 
+
+`mgibio/checkstrandedness` is the docker container name. The `:latest` refers to the specific tag and release of the docker container.
+
+
+The output of this command should look like so:
+```bash
+Fraction of reads failed to determine: 0.1123
+Fraction of reads explained by "1++,1--,2+-,2-+": 0.0155
+Fraction of reads explained by "1+-,1-+,2++,2--": 0.8722
+Over 75% of reads explained by "1+-,1-+,2++,2--"
+Data is likely RF/fr-firststrand
+```
+
+Using this [table](https://rnabio.org/module-09-appendix/0009/12/01/StrandSettings/), we can see if this is what we expect. Note that since the UHR and HBR data were generated with the TruSeq Stranded Kit, as mentioned above, the correct strand setting for kallisto is `--rf-stranded`, which is what check_strandedness confirms. Similarly when we run HISAT we will use `--rna-strandness RF`, when we run StringTie we will use `--rf`, and when we run htseq-count we will use `--stranded reverse`.
+
+***
+
+### PRACTICAL EXERCISE 3
+Assignment: Download an additional dataset and unpack it. This data will be used in future practical exercises.
+
+* Hint: Do this in a separate working directory called ‘practice’ and create sub-directories for organization (data, alignments, etc).
+* In this exercise you will download an archive of publicly available read data from here: [http://genomedata.org/rnaseq-tutorial/practical.tar](http://genomedata.org/rnaseq-tutorial/practical.tar)
+
+The practice dataset includes 3 replicates of data from the HCC1395 breast cancer cell line and 3 replicates of data from HCC1395BL matched lymphoblastoid line. So, this will be a tumor vs normal (cell line) comparison. The reads are paired-end 151-mers generated on an Illumina HiSeq instrument from TruSeq Stranded Total RNA Libraries. The test data has been pre-filtered for reads that appear to map to chromosome 22.
+
+**Questions**
+
+* How many data files were contained in the 'practical.tar' archive? What commonly used sequence data file format are they?
+* In the first read of the hcc1395, normal, replicate 1, read 1 file, what was the physical location of the read on the flow cell (i.e. lane, tile, x, y)?
+* In the first read of this same file, how many 'T' bases are there?
+
+Solution: When you are ready you can check your approach against the [Solutions](/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-3---data).
+
+***
+
+**NOTE**: The complete RAW HCC1395 data sets can be found here: [http://genomedata.org/pmbio-workshop/fastqs/all/](http://genomedata.org/pmbio-workshop/fastqs/all/)
+
+If you use this data, please cite our paper: [Citation](https://github.com/griffithlab/rnaseq_tutorial/wiki/Citation)
+
+

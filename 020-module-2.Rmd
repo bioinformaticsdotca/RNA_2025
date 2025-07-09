@@ -6,3 +6,4 @@
 
 ## Labs
 [Module 2 Labs](https://rnabio.org/module-02-alignment/0002/01/01/Intro_to_Alignment/)
+
