@@ -1,8 +1,32 @@
 # Meet Your Faculty
 
-<!--#### NAME
+#### Malachi Griffith
 
-<img src="./img/faculty/MISSINGHEADSHOT.PNG" width="200" alt="Photo of NAME">
+<img src="./img/faculty/malachi.jpg" width="200" alt="Photo of NAME">
+
+>Professor of Medicine <br>
+Washington University School of Medicine <br>
+St Louis, MO, USA <br>
+> mgriffit@wustl.edu  <br>
+> www.griffithlab.org  <br>
+
+Malachi’s research is focused on the development of genomics and bioinformatics methods as they apply to the study of cancer biology and medicine. A particular focus of his work is in the translation of data from multi-omics sequencing approaches into clinically actionable observations and personalized cancer therapies. He has led the development of key online informatics resources for cancer precision medicine such DGIdb, CIViC, pVACtools and more
+
+#### Obi Griffith
+
+<img src="./img/faculty/obi.jpg" width="200" alt="Photo of NAME">
+
+>Professor of Medicine <br>
+Washington University School of Medicine <br>
+St Louis, MO, USA <br>
+> obigriffith@wustl.edu <br>
+> www.griffithlab.org  <br>
+
+Obi’s research is focused on the development of personalized medicine strategies for cancer using genomic technologies. He develops and uses bioinformatics, machine learning and clinical statistics for the analysis of high throughput sequence data and identification of biomarkers for diagnostic, prognostic and drug response prediction. He has led the development of key online informatics resources such as DGIdb, CIViC, GenVisR and more.
+
+#### Isabel Risch
+
+<!--<img src="./img/faculty/MISSINGHEADSHOT.PNG" width="200" alt="Photo of NAME">
 
 >JOB TITLE <br>
 INSTITUTION <br>
@@ -12,3 +36,50 @@ LOCATION
 
 BIO GOES HERE-->
 
+#### Varinder Madhav Verma
+
+<img src="./img/faculty/verma.jpg" width="200" alt="Photo of NAME">
+
+>PhD Candidate, Molecular Biology and Genetics <br>
+University of Alberta <br>
+Edmonton, Alberta, Canada <br>
+varinde2@ualberta.ca <br>
+
+I am a PhD candidate at the University of Alberta. My research focuses on analyzing transcriptomic data and integrating artificial intelligence to enhance biological & clinical insights. I hold a Master's degree in Systems Biology and Bioinformatics, and am currently involved in developing a multi-omics platform to support the comprehensive analysis of complex biological datasets.
+
+#### Mobin Khoramjoo
+
+<img src="./img/faculty/khoramjoo.jpg" width="200" alt="Photo of NAME">
+
+>PhD Candidate <br>
+University of Alberta <br>
+Edmonton, Alberta <br>
+https://www.linkedin.com/in/mobin-khoramjoo/
+
+
+I am a PhD candidate at the University of Alberta with a strong interest in combining computational tools with biological research. My work involves using bioinformatics, multi-omics integration, and machine learning to study complex biological systems and extract meaningful insights from large datasets.
+I am especially drawn to the challenge of working with high-dimensional data—developing analysis pipelines, applying statistical models, and exploring ways to make biological findings more interpretable and impactful. 
+
+#### Nicolas Ho
+
+<!--<img src="./img/faculty/MISSINGHEADSHOT.PNG" width="200" alt="Photo of NAME">
+
+>JOB TITLE <br>
+INSTITUTION <br>
+LOCATION
+>
+> --- CONTACT INFO, IF PROVIDED
+
+BIO GOES HERE-->
+
+#### Melisa Acun
+
+<!--<img src="./img/faculty/MISSINGHEADSHOT.PNG" width="200" alt="Photo of NAME">
+
+>JOB TITLE <br>
+INSTITUTION <br>
+LOCATION
+>
+> --- CONTACT INFO, IF PROVIDED
+
+BIO GOES HERE-->
