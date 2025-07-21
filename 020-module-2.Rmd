@@ -2,7 +2,10 @@
 
 ## Lecture
 
-<iframe src="https://drive.google.com/file/d/1mq6bvyuTsZCa-U2qr-Otgm3-4DJA6uYS/preview" width="640" height="480" allow="autoplay"></iframe>
+<iframe width="640" height="360" src="https://www.youtube.com/embed/bQV_tH9lhXU?si=Pc3gEBZHsO4Ov2RR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+<iframe src="https://drive.google.com/file/d/1LTqFTLd2rzw5YBm_qJPtXbAWhIWldsX1/preview" width="640" height="480" allow="autoplay"></iframe>
 
 ## Labs
 [Module 2 Labs](https://rnabio.org/module-02-alignment/0002/01/01/Intro_to_Alignment/)
